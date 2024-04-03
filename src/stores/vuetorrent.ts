@@ -32,7 +32,7 @@ export const useVueTorrentStore = defineStore(
     const isShutdownButtonVisible = ref(false)
     const useBitSpeed = ref(false)
     const useBinarySize = ref(false)
-    const refreshInterval = ref(2000)
+    const refreshInterval = ref(500)
     const fileContentInterval = ref(5000)
     const useIdForRssLinks = ref(false)
 
