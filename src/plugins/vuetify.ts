@@ -7,8 +7,8 @@ import colors from 'vuetify/lib/util/colors'
 
 const variables = {
   // Main colors
-  primary: '#35495E',
-  secondary: '#3E556D',
+  primary: '#121313',
+  secondary: '#202120',
   download: '#5BB974',
   upload: '#00B3FA',
   ratio: '#00B2F8',
