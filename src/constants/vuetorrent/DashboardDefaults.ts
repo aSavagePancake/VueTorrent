@@ -2,8 +2,10 @@ import { Torrent } from '@/types/vuetorrent'
 import { useI18n } from 'vue-i18n'
 import { DashboardProperty } from './DashboardProperty'
 import { DashboardPropertyType } from './DashboardPropertyType'
-import {useVueTorrentStore} from "@/stores";
-import {storeToRefs} from "pinia";
+import { getRatioColor } from '@/helpers'
+import { useVueTorrentStore } from '@/stores'
+import { storeToRefs } from 'pinia'
+import { DurationUnitType } from 'dayjs/plugin/duration'
 
 type pptData = { active: boolean; order: number }
 
@@ -13,7 +15,7 @@ type pptMetadata =
   | { type: DashboardPropertyType.CHIP; props: pptMetadataBase<string[]> & { emptyValueKey: string; color: (t: Torrent) => string; enableHashColor?: boolean } }
   | { type: DashboardPropertyType.DATA; props: pptMetadataBase<number> }
   | { type: DashboardPropertyType.DATETIME; props: pptMetadataBase<number> }
-  | { type: DashboardPropertyType.DURATION; props: pptMetadataBase<number> }
+  | { type: DashboardPropertyType.DURATION; props: pptMetadataBase<number> & { unit: DurationUnitType } }
   | { type: DashboardPropertyType.PERCENT; props: pptMetadataBase<number> & { color: (t: Torrent) => string } }
   | { type: DashboardPropertyType.RELATIVE; props: pptMetadataBase<number> }
   | { type: DashboardPropertyType.SPEED; props: pptMetadataBase<number> }
@@ -97,6 +99,10 @@ export const propsData: PropertyData = {
   [DashboardProperty.HASH]: {
     active: false,
     order: 25
+  },
+  [DashboardProperty.INACTIVE_SEEDING_TIME_LIMIT]: {
+    active: false,
+    order: 42
   },
   [DashboardProperty.INFOHASH_V1]: {
     active: false,
@@ -270,6 +276,10 @@ export const propsMetadata: PropertyMetadata = {
     props: { titleKey: 'torrent.properties.hash', value: t => t.hash },
     type: DashboardPropertyType.TEXT
   },
+  [DashboardProperty.INACTIVE_SEEDING_TIME_LIMIT]: {
+    props: { titleKey: 'torrent.properties.inactive_seeding_time_limit', unit: 'm', value: t => t.inactive_seeding_time_limit },
+    type: DashboardPropertyType.DURATION
+  },
   [DashboardProperty.INFOHASH_V1]: {
     props: { titleKey: 'torrent.properties.infohash_v1', value: t => t.infohash_v1 },
     type: DashboardPropertyType.TEXT
@@ -302,10 +312,7 @@ export const propsMetadata: PropertyMetadata = {
         const { enableRatioColors } = storeToRefs(useVueTorrentStore())
 
         if (!enableRatioColors.value) return ''
-        if (v < 0.5) return 'text-ratio-bad'
-        if (v < 1) return 'text-ratio-almost'
-        if (v < 5) return 'text-ratio-good'
-        return 'text-ratio-best'
+        return getRatioColor(v)
       }
     },
     type: DashboardPropertyType.TEXT
@@ -327,11 +334,11 @@ export const propsMetadata: PropertyMetadata = {
     type: DashboardPropertyType.TEXT
   },
   [DashboardProperty.SEEDING_TIME]: {
-    props: { titleKey: 'torrent.properties.seeding_time', value: t => t.seeding_time },
+    props: { titleKey: 'torrent.properties.seeding_time', unit: 's', value: t => t.seeding_time },
     type: DashboardPropertyType.DURATION
   },
   [DashboardProperty.SEEDING_TIME_LIMIT]: {
-    props: { titleKey: 'torrent.properties.seeding_time_limit', value: t => t.seeding_time_limit },
+    props: { titleKey: 'torrent.properties.seeding_time_limit', unit: 'm', value: t => t.seeding_time_limit },
     type: DashboardPropertyType.DURATION
   },
   [DashboardProperty.SEEDS]: {
@@ -355,7 +362,7 @@ export const propsMetadata: PropertyMetadata = {
     type: DashboardPropertyType.CHIP
   },
   [DashboardProperty.TIME_ACTIVE]: {
-    props: { titleKey: 'torrent.properties.time_active', value: t => t.time_active },
+    props: { titleKey: 'torrent.properties.time_active', unit: 's', value: t => t.time_active },
     type: DashboardPropertyType.DURATION
   },
   [DashboardProperty.TOTAL_SIZE]: {

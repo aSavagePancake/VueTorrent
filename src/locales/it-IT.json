@@ -272,7 +272,7 @@
       "status": "Stato Connessione"
     },
     "delete": {
-      "title": "{n, plural, other {Elimina {n} Torrent | Elimina {n} Torrent}}",
+      "title": "Elimina {n} Torrent | Elimina {n} Torrent",
       "warnDelete": "Spuntando questa casella verranno eliminati tutti i contenuti in quei torrent"
     },
     "moveTorrent": {
@@ -476,6 +476,11 @@
       "error": "Errore durante l'aggiunta dei torrent",
       "pending": "Inviando torrent...",
       "success": "{n} Torrent aggiunto | {n} Torrent aggiunti"
+    }
+  },
+  "torrent": {
+    "properties": {
+      "priority": "Priorità"
     }
   }
 }

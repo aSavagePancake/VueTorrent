@@ -306,7 +306,7 @@
     },
     "delete": {
       "deleteWithFiles": "A fájlok törlése a torrenttel együtt",
-      "title": "{n, plural, other {{n} torrent törlése | {n} torrentek törlése}}",
+      "title": "{n} torrent törlése | {n} torrentek törlése",
       "warnDelete": "Ennek a jelölőnégyzetnek a bejelölése minden torrentben található fájlt töröl"
     },
     "importSettings": {
@@ -1176,6 +1176,7 @@
       "global_speed": "Globális Sebesség",
       "global_volume": "Globális Mennyiség",
       "hash": "Hash",
+      "inactive_seeding_time_limit": "Inaktív seedelési időkorlát",
       "infohash_v1": "Infohash v1",
       "infohash_v2": "Infohash v2",
       "is_private": "Privát torrent",

@@ -142,7 +142,7 @@
       "advanced": {
         "auto_tmm": "Automatic Torrent Management",
         "download_path": "Set Download Path",
-        "f_l_prio": "First / Last Priority",
+        "f_l_prio": "First / Last Piece Priority",
         "reannounce": "Force Reannounce",
         "recheck": "Force Recheck",
         "rename": "Rename Torrent",
@@ -164,11 +164,11 @@
       "export": "Export torrent | Export torrents",
       "info": "Show Info",
       "priority": {
-        "bottom": "Bottom Priority",
-        "decrease": "Decrease Priority",
-        "increase": "Increase Priority",
-        "title": "Set Priority",
-        "top": "Top Prio"
+        "bottom": "To bottom",
+        "decrease": "Decrease",
+        "increase": "Increase",
+        "title": "Set queue position",
+        "top": "To top"
       },
       "speed_limit": {
         "download": "Set download limit",
@@ -224,7 +224,7 @@
       "num_incomplete": "Peers (swarm)",
       "num_leechs": "Peers (connected)",
       "num_seeds": "Seeds (connected)",
-      "priority": "Priority",
+      "priority": "Queue position",
       "progress": "Progress",
       "ratio": "Ratio",
       "ratio_limit": "Ratio Limit",
@@ -289,6 +289,23 @@
       "submit": "Add torrents",
       "title": "Add Torrents"
     },
+    "bulkRenameFiles": {
+      "col_origin_name": "Original",
+      "col_result_name": "Result",
+      "duplicated": "Duplicate Filename",
+      "flags": "Flags",
+      "fold": "Collapse",
+      "not_changed": "Filename Not Changed",
+      "notForFolder": "Folder Renaming Not Supported",
+      "nothing_to_do": "No tasks to do",
+      "regexp": "Regular Expression",
+      "run": "Run",
+      "select_regex_flags": "Select Regular Expression Flags",
+      "success": "Rename Successful",
+      "target": "Replacement Input",
+      "title": "Bulk Rename",
+      "unfold": "Expand"
+    },
     "category": {
       "name": "Category Name",
       "nameRequired": "Category name is required",
@@ -313,7 +330,7 @@
     },
     "delete": {
       "deleteWithFiles": "Delete files with torrent",
-      "title": "{n, plural, one {Delete {n} torrent} other {Delete {n} torrents}}",
+      "title": "Delete {n} torrent | Delete {n} torrents",
       "warnDelete": "Ticking this checkbox will delete everything contained in those torrents"
     },
     "importSettings": {
@@ -359,22 +376,6 @@
       "required": "New name is required",
       "sameName": "New name must be different from old name",
       "title": "Rename Torrent"
-    },
-    "bulkRenameFiles": {
-      "title": "Bulk Rename",
-      "regexp": "Regular Expression",
-      "target": "Replacement Input",
-      "col_origin_name": "Original",
-      "col_result_name": "Result",
-      "run": "Run",
-      "success": "Rename Successful",
-      "duplicated": "Duplicate Filename",
-      "not_changed": "Filename Not Changed",
-      "fold": "Collapse",
-      "unfold": "Expand",
-      "notForFolder": "Folder Renaming Not Supported",
-      "select_regex_flags": "Select Regular Expression Flags",
-      "nothing_to_do": "No tasks to do"
     },
     "rss": {
       "feed": {
@@ -933,6 +934,7 @@
     "title": "Settings",
     "vuetorrent": {
       "general": {
+        "backendUrl": "Backend URL",
         "canvasRefreshThreshold": "Piece count to disable canvas auto-refresh",
         "canvasRenderThreshold": "Piece count to disable canvas rendering",
         "check_new": "Check for new version",
@@ -1128,18 +1130,10 @@
         "title": "Add Peers"
       },
       "emptyList": "No peers connected at the moment",
-      "table": {
-        "client": "Client",
-        "connection": "Connection",
-        "downloaded": "Downloaded",
-        "downloadSpeed": "DL",
-        "files": "Files",
-        "flags": "Flags",
-        "host": "Host",
-        "progress": "Progress",
-        "relevance": "Relevance",
-        "uploaded": "Uploaded",
-        "upSpeed": "UL"
+      "fields": {
+        "client": "Client: {name} ({id})",
+        "flags": "Flags: {value}",
+        "relevance": "Relevance: {value}"
       }
     },
     "tabs": {
@@ -1202,6 +1196,7 @@
       "global_speed": "Global Speed",
       "global_volume": "Global Volume",
       "hash": "Hash",
+      "inactive_seeding_time_limit": "Inactive seeding time limit",
       "infohash_v1": "Infohash v1",
       "infohash_v2": "Infohash v2",
       "is_private": "Private torrent",
@@ -1213,7 +1208,7 @@
       "num_leechs": "Peers (connected)",
       "num_seeds": "Seeds (connected)",
       "peers": "Peers",
-      "priority": "Priority",
+      "priority": "Queue position",
       "progress": "Progress",
       "progress_bar": "Progress Bar",
       "ratio": "Ratio",
@@ -1247,6 +1242,7 @@
       "downloading": "Downloading",
       "error": "Error",
       "forcedDL": "[F] Downloading",
+      "forcedMetaDL": "[F] Metadata",
       "forcedUP": "[F] Uploading",
       "metaDL": "Metadata",
       "missingFiles": "Missing Files",

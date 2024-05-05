@@ -306,7 +306,7 @@
     },
     "delete": {
       "deleteWithFiles": "Eliminar archivos con torrent",
-      "title": "{n, plural, other {Eliminar {n} torrente | Eliminar {n} torrents}}",
+      "title": "Eliminar {n} torrente | Eliminar {n} torrents",
       "warnDelete": "Marcar esta casilla eliminará todo lo contenido en esos torrents"
     },
     "importSettings": {
@@ -1176,6 +1176,7 @@
       "global_speed": "Velocidad global",
       "global_volume": "Volumen Global",
       "hash": "Hash",
+      "inactive_seeding_time_limit": "Límite de tiempo de siembra inactiva",
       "infohash_v1": "Infohash v1",
       "infohash_v2": "Infohash v2",
       "is_private": "Torrent privado",
@@ -1221,7 +1222,7 @@
       "downloading": "Descargando",
       "error": "Error",
       "forcedDL": "[F] Descargando",
-      "forcedUP": "[F] Cargando",
+      "forcedUP": "[F] Subiendo",
       "metaDL": "Metadatos",
       "missingFiles": "Archivos faltantes",
       "moving": "Moviendo",
@@ -1232,7 +1233,7 @@
       "stalledDL": "Detenido",
       "stalledUP": "Sembrando",
       "unknown": "Desconocido",
-      "uploading": "Cargando"
+      "uploading": "Subiendo"
     }
   },
   "units": {
