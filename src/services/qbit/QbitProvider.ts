@@ -25,14 +25,22 @@ import type IProvider from './IProvider'
 type Parameters = Record<string, any>
 
 export default class QBitProvider implements IProvider {
+  private static _instance: QBitProvider
   private axios: AxiosInstance
 
-  constructor() {
+  private constructor() {
     this.axios = axios.create({
       baseURL: 'api/v2'
     })
 
     this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+  }
+
+  public static getInstance() {
+    if (!this._instance) {
+      this._instance = new QBitProvider()
+    }
+    return this._instance
   }
 
   /// Misc ///
@@ -316,7 +324,7 @@ export default class QBitProvider implements IProvider {
     return this.axios.get('/sync/maindata', { params: { rid } }).then(res => res.data)
   }
 
-  async getTorrentPeers(hash: string, rid?: number): Promise<TorrentPeersResponse> {
+  async syncTorrentPeers(hash: string, rid?: number): Promise<TorrentPeersResponse> {
     return this.axios
       .get('/sync/torrentPeers', {
         params: { hash, rid }
@@ -324,7 +332,7 @@ export default class QBitProvider implements IProvider {
       .then(r => r.data)
   }
 
-  /// TorentsController ///
+  /// TorrentsController ///
 
   async getTorrents(payload?: GetTorrentPayload): Promise<Torrent[]> {
     return this.axios.get('/torrents/info', { params: payload }).then(r => r.data)

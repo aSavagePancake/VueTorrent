@@ -1,6 +1,6 @@
 import { useSearchQuery, useTreeBuilder } from '@/composables'
 import { FilePriority } from '@/constants/qbit'
-import { qbit } from '@/services'
+import qbit from '@/services/qbit'
 import { useDialogStore } from '@/stores/dialog'
 import { useMaindataStore } from '@/stores/maindata'
 import { useVueTorrentStore } from '@/stores/vuetorrent'
@@ -8,7 +8,7 @@ import { TorrentFile } from '@/types/qbit/models'
 import { RightClickMenuEntryType, RightClickProperties, TreeFolder, TreeNode } from '@/types/vuetorrent'
 import { useIntervalFn } from '@vueuse/core'
 import { defineStore, storeToRefs } from 'pinia'
-import { computed, nextTick, reactive, ref, toRaw, watch } from 'vue'
+import { computed, nextTick, reactive, ref, toRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -30,35 +30,14 @@ export const useContentStore = defineStore('content', () => {
   const cachedFiles = ref<TorrentFile[]>([])
   const openedItems = ref([''])
   const { results: filteredFiles } = useSearchQuery(cachedFiles, filenameFilter, item => item.name)
-  const { tree } = useTreeBuilder(filteredFiles)
-
-  const flatTree = computed(() => {
-    const flatten = (node: TreeNode, parentPath: string): TreeNode[] => {
-      const path = parentPath === '' ? node.name : parentPath + '/' + node.name
-
-      if (node.type === 'folder' && openedItems.value.includes(node.fullName)) {
-        const children = node.children
-          .toSorted((a: TreeNode, b: TreeNode) => {
-            if (a.type === 'folder' && b.type === 'file') return -1
-            if (a.type === 'file' && b.type === 'folder') return 1
-            return a.name.localeCompare(b.name)
-          })
-          .flatMap(el => flatten(el, path))
-        return [node, ...children]
-      } else {
-        return [node]
-      }
-    }
-
-    return flatten(tree.value, '')
-  })
+  const { flatTree } = useTreeBuilder(filteredFiles, openedItems)
 
   const internalSelection = ref<Set<string>>(new Set())
   const selectedNodes = computed<TreeNode[]>(() => (internalSelection.value.size === 0 ? [] : flatTree.value.filter(node => internalSelection.value.has(node.fullName))))
   const selectedNode = computed<TreeNode | null>(() => (selectedNodes.value.length > 0 ? selectedNodes.value[0] : null))
   const selectedIds = computed<number[]>(() =>
     selectedNodes.value
-      .map(node => node.getChildrenIds())
+      .map(node => node.childrenIds)
       .flat()
       .filter((v, i, a) => a.indexOf(v) === i)
   )
@@ -88,7 +67,8 @@ export const useContentStore = defineStore('content', () => {
     }
   ])
 
-  const { pause: pauseTimer, resume: resumeTimer } = useIntervalFn(updateFileTree, fileContentInterval, {
+  const timerForcedPause = ref(false)
+  const { isActive: isTimerActive, pause: pauseTimer, resume: resumeTimer } = useIntervalFn(updateFileTree, fileContentInterval, {
     immediate: false,
     immediateCallback: true
   })
@@ -96,36 +76,28 @@ export const useContentStore = defineStore('content', () => {
   async function updateFileTree() {
     if (_lock.value) return
     _lock.value = true
-    await nextTick()
-
+    performance.mark('ContentStore::updateFileTree::start')
     cachedFiles.value = await maindataStore.fetchFiles(hash.value)
-
-    _lock.value = false
+      .finally(() => _lock.value = false)
     await nextTick()
+    performance.mark('ContentStore::updateFileTree::end')
+    performance.measure('ContentStore::updateFileTree', 'ContentStore::updateFileTree::start', 'ContentStore::updateFileTree::end')
   }
-
-  const renameDialog = ref('')
-
-  const renamePayload = reactive({
-    hash: '',
-    isFolder: false,
-    oldName: ''
-  })
 
   async function renameNode(node: TreeNode) {
     const { default: MoveTorrentFileDialog } = await import('@/components/Dialogs/MoveTorrentFileDialog.vue')
-    renamePayload.hash = hash.value
-    renamePayload.isFolder = node.type === 'folder'
-    renamePayload.oldName = node.fullName
-    renameDialog.value = dialogStore.createDialog(MoveTorrentFileDialog, renamePayload)
+    const payload = {
+      hash: hash.value,
+      isFolder: node.type === 'folder',
+      oldName: node.fullName
+    }
+    dialogStore.createDialog(MoveTorrentFileDialog, payload, updateFileTree)
   }
 
   async function bulkRename(node: TreeFolder) {
     const { default: BulkRenameFilesDialog } = await import('@/components/Dialogs/BulkRenameFilesDialog.vue')
-    renameDialog.value = dialogStore.createDialog(BulkRenameFilesDialog, {
-      hash: hash.value,
-      node
-    })
+    const payload = { hash: hash.value, node }
+    dialogStore.createDialog(BulkRenameFilesDialog, payload, updateFileTree)
   }
 
   async function renameTorrentFile(hash: string, oldPath: string, newPath: string) {
@@ -141,15 +113,6 @@ export const useContentStore = defineStore('content', () => {
     await updateFileTree()
   }
 
-  watch(
-    () => dialogStore.isDialogOpened(renameDialog.value),
-    async v => {
-      if (!v) {
-        await updateFileTree()
-      }
-    }
-  )
-
   return {
     rightClickProperties,
     internalSelection,
@@ -158,9 +121,10 @@ export const useContentStore = defineStore('content', () => {
     cachedFiles,
     openedItems,
     filteredFiles,
-    tree,
     flatTree,
     updateFileTree,
+    timerForcedPause,
+    isTimerActive,
     pauseTimer,
     resumeTimer,
     renameTorrentFile,

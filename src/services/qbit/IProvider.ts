@@ -144,7 +144,7 @@ export default interface IProvider {
    * @param itemPath Feed path
    * @param articleId Article ID
    */
-  markAsRead(itemPath: string, articleId: string): Promise<void>
+  markAsRead(itemPath: string, articleId?: string): Promise<void>
 
   /**
    * Refresh a feed
@@ -236,7 +236,7 @@ export default interface IProvider {
    * @param hash Torrent hash
    * @param rid Request ID
    */
-  getTorrentPeers(hash: string, rid?: number): Promise<TorrentPeersResponse>
+  syncTorrentPeers(hash: string, rid?: number): Promise<TorrentPeersResponse>
 
   /// TorrentsController ///
 

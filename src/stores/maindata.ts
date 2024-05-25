@@ -1,7 +1,7 @@
 import { useTorrentBuilder } from '@/composables'
 import { SortOptions } from '@/constants/qbit'
 import { extractHostname } from '@/helpers'
-import { qbit } from '@/services'
+import qbit from '@/services/qbit'
 import { Category, ServerState } from '@/types/qbit/models'
 import { defineStore, storeToRefs } from 'pinia'
 import { MaybeRefOrGetter, ref, toValue } from 'vue'
@@ -189,8 +189,8 @@ export const useMaindataStore = defineStore('maindata', () => {
     await qbit.removeTorrentTrackers(hash, urls)
   }
 
-  async function getTorrentPeers(hash: string) {
-    return await qbit.getTorrentPeers(hash)
+  async function syncTorrentPeers(hash: string, rid?: number) {
+    return await qbit.syncTorrentPeers(hash, rid)
   }
 
   async function addTorrentPeers(hash: string, peers: string[]) {
@@ -241,7 +241,7 @@ export const useMaindataStore = defineStore('maindata', () => {
     addTorrentTrackers,
     editTorrentTracker,
     removeTorrentTrackers,
-    getTorrentPeers,
+    syncTorrentPeers,
     addTorrentPeers,
     banPeers,
     setDownloadLimit,
